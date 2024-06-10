@@ -5,6 +5,7 @@ import os
 import json 
 import pandas as pd 
 from datetime import datetime
+import tiktoken
 
 """
 Based on Reda Marzouk tutorial 
@@ -15,6 +16,8 @@ API Keys
 --------
 https://www.firecrawl.dev/account
 https://platform.openai.com/api-keys
+
+
 
 """
 
@@ -127,6 +130,23 @@ def save_formatted_data(formatted_data, timestamp, output_folder='output'):
     df.to_excel(excel_output_path, index=False)
     print(f"Formatted data saved to Excel at {excel_output_path}")
 
+
+def count_tokens(input_string: str) -> int:
+    tokenizer = tiktoken.get_encoding("cl100k_base")
+
+    tokens = tokenizer.encode(input_string)
+
+    return len(tokens)
+
+def calculate_cost(input_string: str, cost_per_million_tokens: float = 5) -> float:
+    num_tokens = count_tokens(input_string)
+    print(f"Total Tokens {num_tokens}")
+    total_cost = (num_tokens / 1_000_000) * cost_per_million_tokens
+
+    return total_cost
+
+
+
 if __name__ == "__main__":
     # Scrape a single URL
     #url = 'https://www.zillow.com/salt-lake-city-ut/'
@@ -139,6 +159,10 @@ if __name__ == "__main__":
         
         # Scrape data
         raw_data = scrape_data(url)
+
+        #calculate cost
+        cost = calculate_cost(raw_data)
+        print(f"The total cost using gpt-4o is: $US {cost:.6f}")
         
         # Save raw data
         save_raw_data(raw_data, timestamp)
