@@ -45,7 +45,7 @@ def save_raw_data(raw_data, timestamp, output_folder='output'):
         f.write(raw_data)
     print(f"Raw data saved to {raw_output_path}")
 
-def format_data(data, fields=None):
+def format_data(data, fields=None, modelToUse="gpt-4o"):
     load_dotenv()
     # Instantiate the OpenAI client
     client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -68,7 +68,7 @@ def format_data(data, fields=None):
     #gpt-3.5-turbo-1106 40k
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=modelToUse,
         response_format={ "type": "json_object" },
         messages=[
             {
@@ -145,13 +145,19 @@ def calculate_cost(input_string: str, cost_per_million_tokens: float = 5) -> flo
 
     return total_cost
 
-
+openAI_model_pricing = {}
+openAI_model_pricing['gpt-4o'] = 5
+openAI_model_pricing['gpt-3.5-turbo-0125'] = .5
+openAI_model_pricing['gpt-3.5-turbo-1106'] = 1
 
 if __name__ == "__main__":
     # Scrape a single URL
     #url = 'https://www.zillow.com/salt-lake-city-ut/'
     url = 'https://www.trulia.com/CA/San_Francisco/'
     #url = 'https://www.seloger.com/immobilier/achat/immo-lyon-69/'
+    
+    #model_to_use = "gpt-4o"
+    model_to_use = "gpt-3.5-turbo-1106"
     
     try:
         # Generate timestamp
@@ -161,14 +167,16 @@ if __name__ == "__main__":
         raw_data = scrape_data(url)
 
         #calculate cost
-        cost = calculate_cost(raw_data)
-        print(f"The total cost using gpt-4o is: $US {cost:.6f}")
+        cost = calculate_cost(raw_data,openAI_model_pricing[model_to_use])
+        print(f"The total cost using {model_to_use} is: $US {cost:.6f}")
         
         # Save raw data
         save_raw_data(raw_data, timestamp)
         
+        fields = ["Address", "Real Estate Agency", "Price", "Beds", "Baths", "Sqft", "Home Type", "Listing Age", "Picture of home URL", "Listing URL"]
+
         # Format data
-        formatted_data = format_data(raw_data)
+        formatted_data = format_data(raw_data,fields,model_to_use)
         
         # Save formatted data
         save_formatted_data(formatted_data, timestamp)
