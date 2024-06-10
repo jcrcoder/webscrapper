@@ -1,4 +1,9 @@
-# webscrapper
-simple test to web scrape, based on https://github.com/redamarzouk/Scraping_Agent
+# Web Scrapper project
 
-Uses Firecrawl and OpenAI
+## Description
+This is a simple test that uses LLMs to extract data from a web scrape.  
+*Based on https://github.com/redamarzouk/Scraping_Agent*
+
+## Main components used
+- Uses Firecrawl
+- OpenAI
