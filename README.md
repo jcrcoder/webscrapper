@@ -3,6 +3,7 @@
 ## Description
 This is a simple test that uses LLMs to extract data from a web scrape.  
 *Based on https://github.com/redamarzouk/Scraping_Agent*
+*Also on https://github.com/trancethehuman/ai-workshop-code/blob/main/Web_scraping_for_LLM_in_2024.ipynb*
 
 ## Main components used
 - Uses Firecrawl : Markdown version of site, no HTML code
