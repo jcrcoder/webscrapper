@@ -6,6 +6,7 @@ import json
 import pandas as pd 
 from datetime import datetime
 import tiktoken
+import requests
 
 """
 Based on Reda Marzouk tutorial 
@@ -21,7 +22,7 @@ https://platform.openai.com/api-keys
 
 """
 
-def scrape_data(url):
+def scrape_data_firecrawl(url):
     load_dotenv()
     # Initialize the FirecrawlApp with your API key
     app = FirecrawlApp(api_key=os.getenv('FIRECRAWL_API_KEY'))
@@ -34,6 +35,12 @@ def scrape_data(url):
         return scraped_data['markdown']
     else:
         raise KeyError("The key 'markdown' does not exist in the scraped data.")
+    
+
+
+def scrape_data_jinaai(url: str) -> str:
+  response = requests.get("https://r.jina.ai/" + url)
+  return response.text
     
 def save_raw_data(raw_data, timestamp, output_folder='output'):
     # Ensure the output folder exists
@@ -164,12 +171,20 @@ if __name__ == "__main__":
         # Generate timestamp
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         
-        # Scrape data
-        raw_data = scrape_data(url)
+        # Scrape data FireCrawl
+        raw_data = scrape_data_firecrawl(url)
 
         #calculate cost
         cost = calculate_cost(raw_data,openAI_model_pricing[model_to_use])
-        print(f"The total cost using {model_to_use} is: $US {cost:.6f}")
+        print(f"The total cost using FireCrawl with {model_to_use} is: $US {cost:.6f}")
+
+        # Scrape data Jina AI
+        raw_data = scrape_data_jinaai(url)
+
+        #calculate cost
+        cost = calculate_cost(raw_data,openAI_model_pricing[model_to_use])
+        print(f"The total cost using Jina AI with {model_to_use} is: $US {cost:.6f}")
+
         
         # Save raw data
         save_raw_data(raw_data, timestamp)
