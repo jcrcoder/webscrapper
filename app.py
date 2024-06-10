@@ -6,10 +6,17 @@ import json
 import pandas as pd 
 from datetime import datetime
 
+"""
+Based on Reda Marzouk tutorial 
+https://www.youtube.com/watch?v=ncnm3P2Tl28&ab_channel=RedaMarzouk
 
-#https://www.firecrawl.dev/account
-#https://platform.openai.com/api-keys
 
+API Keys
+--------
+https://www.firecrawl.dev/account
+https://platform.openai.com/api-keys
+
+"""
 
 def scrape_data(url):
     load_dotenv()
