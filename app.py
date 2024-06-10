@@ -153,8 +153,9 @@ openAI_model_pricing['gpt-3.5-turbo-1106'] = 1
 if __name__ == "__main__":
     # Scrape a single URL
     #url = 'https://www.zillow.com/salt-lake-city-ut/'
-    url = 'https://www.trulia.com/CA/San_Francisco/'
+    #url = 'https://www.trulia.com/CA/San_Francisco/'
     #url = 'https://www.seloger.com/immobilier/achat/immo-lyon-69/'
+    url = 'https://techbargains.com/search?search=smartphone'
     
     #model_to_use = "gpt-4o"
     model_to_use = "gpt-3.5-turbo-1106"
@@ -173,7 +174,11 @@ if __name__ == "__main__":
         # Save raw data
         save_raw_data(raw_data, timestamp)
         
-        fields = ["Address", "Real Estate Agency", "Price", "Beds", "Baths", "Sqft", "Home Type", "Listing Age", "Picture of home URL", "Listing URL"]
+        
+        #define the fields you'd like to pull from the site. 
+        #currently using real estate as dataset
+        #fields = ["Address", "Real Estate Agency", "Price", "Beds", "Baths", "Sqft", "Home Type", "Listing Age", "Picture of home URL", "Listing URL"]
+        fields = ["Title","Price","Deal Status","URL"]
 
         # Format data
         formatted_data = format_data(raw_data,fields,model_to_use)
