@@ -9,16 +9,15 @@ import tiktoken
 import requests
 
 """
-Based on Reda Marzouk tutorial 
-https://www.youtube.com/watch?v=ncnm3P2Tl28&ab_channel=RedaMarzouk
+POC Code - testing purposes only
+
+
 
 
 API Keys
 --------
 https://www.firecrawl.dev/account
 https://platform.openai.com/api-keys
-
-
 
 """
 
@@ -57,7 +56,7 @@ def format_data(data, fields=None, modelToUse="gpt-4o"):
     # Instantiate the OpenAI client
     client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-    # Assign default fields if not provided
+    # Assign default to Real Estate fields if none are provided
     if fields is None:
         fields = ["Address", "Real Estate Agency", "Price", "Beds", "Baths", "Sqft", "Home Type", "Listing Age", "Picture of home URL", "Listing URL"]
 
@@ -161,6 +160,7 @@ if __name__ == "__main__":
     # Scrape a single URL
     #url = 'https://www.zillow.com/salt-lake-city-ut/'
     #url = 'https://www.trulia.com/CA/San_Francisco/'
+    #test URL in different language (French)
     #url = 'https://www.seloger.com/immobilier/achat/immo-lyon-69/'
     url = 'https://techbargains.com/search?search=smartphone'
     
@@ -178,21 +178,20 @@ if __name__ == "__main__":
         cost = calculate_cost(raw_data,openAI_model_pricing[model_to_use])
         print(f"The total cost using FireCrawl with {model_to_use} is: $US {cost:.6f}")
 
-        # Scrape data Jina AI
-        raw_data = scrape_data_jinaai(url)
+        # Scrape data Jina AI to compare. (commented out to use FireCrawl)
+        # Preliminary tests show that Firecraw bring more data and more accurate results. Jina doesn't have any of the MD tags
+        #raw_data = scrape_data_jinaai(url)
 
-        #calculate cost
-        cost = calculate_cost(raw_data,openAI_model_pricing[model_to_use])
-        print(f"The total cost using Jina AI with {model_to_use} is: $US {cost:.6f}")
-
+        #calculate Jina AI cost (similar to FireCrawl)
+        #cost = calculate_cost(raw_data,openAI_model_pricing[model_to_use])
+        #print(f"The total cost using Jina AI with {model_to_use} is: $US {cost:.6f}")
         
-        # Save raw data
+        # Save raw MD data
         save_raw_data(raw_data, timestamp)
-        
-        
+                
         #define the fields you'd like to pull from the site. 
-        #currently using real estate as dataset
-        #fields = ["Address", "Real Estate Agency", "Price", "Beds", "Baths", "Sqft", "Home Type", "Listing Age", "Picture of home URL", "Listing URL"]
+        #By default uses real estate as dataset.
+        #Fields to use with Techbargains URL. Comment out to use the Real Estate sites
         fields = ["Title","Price","Deal Status","URL"]
 
         # Format data
